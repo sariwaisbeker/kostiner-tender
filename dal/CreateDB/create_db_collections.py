@@ -1,10 +1,10 @@
 import json
 import os
 
-from pymongo import MongoClient,errors
+from pymongo import errors
 from dotenv import load_dotenv
 
-from connectDB import connect_to_mongodb
+from CreateDB.connectDB import connect_to_mongodb
 
 load_dotenv()
 

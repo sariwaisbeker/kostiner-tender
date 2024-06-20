@@ -26,11 +26,11 @@ if not all(required_env_vars):
     raise ValueError("One or more required environment variables are not set")
 
 # יבוא של הפונקציות הקיימות שלך
-from create_with_pay.create_organization import create_organization
-from create_with_pay.create_project import create_project
-from create_with_pay.create_cluster import create_cluster
-from create_with_pay.create_database import create_database
-from create_with_pay.create_collection import create_collection
+from CreateDB.create_with_pay.create_organization import create_organization
+from CreateDB.create_with_pay.create_project import create_project
+from CreateDB.create_with_pay.create_cluster import create_cluster
+from CreateDB.create_with_pay.create_database import create_database
+from CreateDB.create_with_pay.create_collection import create_collection
 from get_existing_resources import get_organization_id, get_project_id, get_cluster_id
 
 # פונקציה לבדיקה אם ה-DB וה-COLLECTION כבר קיימים
