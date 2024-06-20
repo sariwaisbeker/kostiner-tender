@@ -26,6 +26,10 @@ To work with this project, a virtual environment is required
    ```sh
    pip install -r requirements.txt
    ```
+6. Running the app
+   ```sh
+   python app\app.py
+   ```
    
 <!-- CONTRIBUTING -->
 ## Contributing
