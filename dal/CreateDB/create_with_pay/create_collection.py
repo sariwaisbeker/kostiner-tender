@@ -1,4 +1,4 @@
-def create_collection(db, collection_name):
+def create_or_get_collection(db, collection_name):
     """
     Create a collection if it does not exist.
 
