@@ -8,22 +8,23 @@ policies = {
     "UserPolicy": lambda user: user.get("role") == "user"
 }
 
-from Authorization.app import policies
 def get_current_user():
     user=get_jwt_identity()
     return user
 
+
+
 def policy_required(policy_name):
     def decorator(f):
         @wraps(f)
-        def decorated_function(*args,**kwargs):
-            user=get_current_user()
+        def decorated_function(*args, **kwargs):
+            user = get_current_user()
             if not user:
-                abort(401)
+                raise ValueError(401)
+            if user != policy_name:
+                raise ValueError(403)
+            return f(*args, **kwargs)
 
-            policy=policies.get(policy_name)
-            if not policy or not policy(user):
-                abort(403)
-            return f(*args,**kwargs)
         return decorated_function
-    return  decorator
+
+        return decorator
