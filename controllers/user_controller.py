@@ -11,6 +11,7 @@ class userList(Resource):
     def __init__(self, *args, **kwargs):
         super(userList, self).__init__(*args, **kwargs)
         self.user_service = user_service
+        print(user_service)
 
     @namespace.doc('list_user')
     @namespace.marshal_list_with(user_model)
@@ -55,6 +56,7 @@ class user(Resource):
         print('user_controller //def put(self, user_id)')
         update_user = request.json
         result = self.user_service.update(user_id, update_user)
+        print(f'result.modified_count {result.modified_count}')
         if result.modified_count > 0:
             updated_user = self.user_service.get_by_id(user_id)
             return updated_user
