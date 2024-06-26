@@ -9,6 +9,7 @@ CORS(app)
 api = Api(app, version='1.0', title='Kostiner Tender Records', description='Information from the world of auctions')
 
 api.add_namespace(nameSpace)
+app.before_request(before_request_middleware())
 
 if __name__ == '__main__':
     app.run(debug=True)
