@@ -12,19 +12,15 @@ def get_current_user():
     user=get_jwt_identity()
     return user
 
-
-
 def policy_required(policy_name):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             user = get_current_user()
             if not user:
-                raise ValueError(401)
+                abort(401)
             if user != policy_name:
-                raise ValueError(403)
+                abort(403)
             return f(*args, **kwargs)
-
         return decorated_function
-
-        return decorator
+    return decorator
