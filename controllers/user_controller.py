@@ -17,7 +17,7 @@ class userList(Resource):
     @namespace.marshal_list_with(user_model)
     def get(self):
         '''get all users'''
-        return self.user_service.get()
+        return self.user_service.get_all()
 
     @namespace.doc('create_user')
     @namespace.expect(user_model)
@@ -25,7 +25,7 @@ class userList(Resource):
         '''create a new user'''
         print('post in user_controller')
         new_user = request.json
-        result = self.user_service.insert(new_user)
+        result = self.user_service.create(new_user)
         print(result.acknowledged)
         return {'message': f'User created successfully'}, 201
 
