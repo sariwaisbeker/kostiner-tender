@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask_jwt_extended import verify_jwt_in_request
 
 def before_request_middleware():
@@ -7,7 +7,6 @@ def before_request_middleware():
             'static', 'specs', 'doc', 'root', 'restx_doc.static',
             'auth_login', 'auth_password_reset_request'
         }
-        print(request.endpoint)
         if request.endpoint not in excluded_endpoints:
             try:
                 verify_jwt_in_request()

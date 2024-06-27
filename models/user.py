@@ -1,7 +1,3 @@
-from flask_mongoengine import MongoEngine
-
-db = MongoEngine()
-
 class User:
     def __init__(self, user_id, username=None, password=None, email=None,role=None,
                  first_name=None, last_name=None, business_name=None):
