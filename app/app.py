@@ -11,9 +11,9 @@ CORS(app)
 api = Api(app, version='1.0', title='Kostiner Tender Records', description='Information from the world of auctions')
 
 api.add_namespace(nameSpace)
-# api.add_namespace(namespace_user)
-app.before_request(before_request_middleware())
-api.add_namespace(namespace_user, path='/users')
+api.add_namespace(namespace_user)
+# app.before_request(before_request_middleware())
+# api.add_namespace(namespace_user, path='/users')
 
 if __name__ == '__main__':
     print('in app')

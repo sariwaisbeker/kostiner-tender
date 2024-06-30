@@ -2,7 +2,7 @@ from flask_restx import Namespace, fields
 
 nameSpace_user = Namespace(name=str('user'),
                       description='users',
-                      path='/api/user',
+                      path='/api',
                       ordered=True
                       )
 
@@ -14,5 +14,5 @@ user_model = nameSpace_user.model('user', {
     'role': fields.String(required=True, description='role of the user'),
     'first_name': fields.String(required=True, description='first_name of the user'),
     'last_name': fields.String(required=True, description='last_name of the user'),
-    'business_name': fields.String(required=True, description='business_name of the user'),
+    'business_name': fields.String(required=True, description='business_name of the user')
 })

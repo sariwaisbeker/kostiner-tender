@@ -4,6 +4,7 @@ class base_service:
         print(f'in __init__ base_service implements {self.repo}')
 
     def get_all(self):
+        print('in service in get method')
         return self.repo.get()
 
     def get_by_id(self, object_id):

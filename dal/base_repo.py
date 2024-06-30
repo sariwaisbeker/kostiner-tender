@@ -16,8 +16,10 @@ class base_repo:
     def get_obj_id(self):
         raise NotImplementedError("Subclasses should implement this method.")
 
+    # @requird_policy('user')
     def get(self):
         try:
+            print('in repo in get method')
             return list(self.collection.find())
         except errors.PyMongoError as e:
             print(f"An error occurred: {e}")
@@ -38,7 +40,8 @@ class base_repo:
         try:
             data[self.get_obj_id()] = ObjectId()
             result = self.collection.insert_one(data)
-            return result
+            return self.get_by_id(data[self.get_obj_id()])
+            # return result
         except errors.PyMongoError as e:
             print(f"An error occurred: {e}")
             return None
