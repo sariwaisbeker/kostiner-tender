@@ -14,6 +14,7 @@ class base_service:
         return self.repo.insert(data)
 
     def update(self, object_id, data):
+        print('update in base service')
         return self.repo.update(object_id, data)
 
     def delete(self, object_id):

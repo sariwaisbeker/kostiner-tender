@@ -51,6 +51,7 @@ class base_repo:
             obj_id = self.get_obj_id()
             data.pop(obj_id, None)
             result = self.collection.update_one({obj_id: ObjectId(object_id)}, {'$set': data})
+            print(f'update in base_repo {result.modified_count}')
             return result
         except errors.InvalidId as e:
             print(f"Invalid ID: {e}")

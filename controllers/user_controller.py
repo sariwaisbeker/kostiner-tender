@@ -45,8 +45,10 @@ class PutUserById(Resource):
     @namespace.marshal_with(user_model)
     def put(self, user_id):
         '''update user by id'''
+        print('PutUserById in user controller')
         update_user = request.json
         result = user_service.update(user_id, update_user)
+        print(f'result.modified_count {result.modified_count}')
         if result.modified_count > 0:
             updated_user = user_service.get_by_id(user_id)
             return updated_user
