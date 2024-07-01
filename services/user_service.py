@@ -1,6 +1,5 @@
 from dal.user_repo import user_repo
 from services.base_service import base_service
-from email_validator import validate_email, EmailNotValidError
 
 class user_service(base_service):
     def __init__(self):
