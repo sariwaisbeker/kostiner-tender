@@ -4,7 +4,7 @@ from flask_restx import Api
 
 from controllers.example_controller import nameSpace
 from controllers.user_controller import namespace as namespace_user
-from middlewares.authorization_middleware import before_request_middleware
+# from middlewares.authorization_middleware import before_request_middleware
 
 app = Flask(__name__)
 CORS(app)
