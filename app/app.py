@@ -12,8 +12,7 @@ api = Api(app, version='1.0', title='Kostiner Tender Records', description='Info
 
 api.add_namespace(nameSpace)
 api.add_namespace(namespace_user)
-# app.before_request(before_request_middleware())
-# api.add_namespace(namespace_user, path='/users')
+# api.before_request(before_request_middleware())
 
 if __name__ == '__main__':
     print('in app')

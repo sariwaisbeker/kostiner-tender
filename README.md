@@ -26,6 +26,10 @@ To work with this project, a virtual environment is required
    ```sh
    pip install -r requirements.txt
    ```
+5. run:
+   ```shell
+   python -m flask run
+   ```
 
 ### Dockerfile
 1. Build the Docker image:
