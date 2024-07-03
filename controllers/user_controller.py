@@ -72,6 +72,7 @@ class GetRole(Resource):
 
 
 namespace.add_resource(GetAllUsers, '/get-all-users')
+namespace.add_resource(GetRole, '/get-role')
 namespace.add_resource(PostUser, '/post-user')
 namespace.add_resource(GetUserById, '/get-id-user/<string:user_id>')
 namespace.add_resource(PutUserById, '/put-user/<string:user_id>')
