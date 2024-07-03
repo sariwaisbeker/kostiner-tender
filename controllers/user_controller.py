@@ -1,6 +1,7 @@
 from flask_restx import Resource
 from flask import request
 
+
 from services import user_service
 from models_swagger.user_model import nameSpace_user as namespace, user_model
 
@@ -64,6 +65,12 @@ class DeleteUserById(Resource):
         if count_delete is not None and count_delete > 0:
             return 'The user deleted successfully'
         namespace.abort(404, f"user {user_id} doesn't exist")
+
+@namespace.route('/get-role')
+class GetRole(Resource):
+    @user_service.token_required
+    def get(self, current_user_role):
+        return {'role': current_user_role}
 
 
 namespace.add_resource(GetAllUsers, '/get-all-users')
