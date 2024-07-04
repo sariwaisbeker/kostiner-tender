@@ -1,11 +1,9 @@
-from bson import json_util
 from flask_restx import Resource
 from flask import request
-from pymongo.results import InsertManyResult
-from werkzeug.exceptions import BadRequest
 
 from services import tender_service
-from models_swagger.tender_model import namespace_tender as namespace, tender_model, path_model
+from models_swagger.tender_model import namespace_tender as namespace, tender_model
+
 
 @namespace.route('/get-all-tenders')
 class GetAllTenders(Resource):
@@ -30,16 +28,14 @@ class GetTenderById(Resource):
 @namespace.route('/post-tender')
 class PostTender(Resource):
     @namespace.doc('create_tender')
-    @namespace.expect(path_model)
-    @namespace.marshal_list_with(tender_model, code=201)
+    @namespace.expect(tender_model)
+    @namespace.marshal_with(tender_model)
     def post(self):
         '''create a new tender'''
-        path = request.json
-        result = tender_service.create(path)
-        print(f'in tender controller \ntype(result) {type(result)}')
-        if isinstance(result, list):
-            return result, 201
-        namespace.abort(result[0], result[1])
+        new_tender = request.json
+        result = tender_service.create(new_tender)
+        print(result)
+        return result, 201
 
 
 @namespace.route('/put-tender/<string:tender_id>')
@@ -58,9 +54,8 @@ class PutTenderById(Resource):
 
 
 @namespace.route('/delete-tender/<string:tender_id>')
-@namespace.response(204, 'No Content')
 class DeleteTenderById(Resource):
-    @namespace.doc('delete_tender', code=204)
+    @namespace.doc('delete_tender')
     def delete(self, tender_id):
         '''delete tender by Id'''
         count_delete = tender_service.delete(tender_id)

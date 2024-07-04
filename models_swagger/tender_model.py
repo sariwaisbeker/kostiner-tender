@@ -19,13 +19,9 @@ disqualified_participants_model = namespace_tender.model('disqualified_participa
 
 details_model = namespace_tender.model('Details', {
     'participants': fields.List(fields.Nested(participant_model), required=True, description='List of participants'),
-    'disqualified_participants': fields.List(fields.Nested(disqualified_participants_model), required=True, description='Participants who do not fit the tender rules and are disqualified'),
+    'disqualified_participants': fields.List(fields.Nested(participant_model), required=True, description='Participants who do not fit the tender rules and are disqualified'),
     'committee_member': fields.String(required=True, description='committee_member'),
 
-})
-
-path_model = namespace_tender.model('Path', {
-    'csv_file_path': fields.String(required=True, description='Path to the uploaded CSV file')
 })
 
 # Define the main model
