@@ -7,6 +7,7 @@ from werkzeug.exceptions import BadRequest
 from services import tender_service
 from models_swagger.tender_model import namespace_tender as namespace, tender_model, path_model
 
+
 @namespace.route('/get-all-tenders')
 class GetAllTenders(Resource):
     @namespace.doc('list_tender')
@@ -60,7 +61,7 @@ class PutTenderById(Resource):
 @namespace.route('/delete-tender/<string:tender_id>')
 @namespace.response(204, 'No Content')
 class DeleteTenderById(Resource):
-    @namespace.doc('delete_tender', code=204)
+    @namespace.doc('delete_tender')
     def delete(self, tender_id):
         '''delete tender by Id'''
         count_delete = tender_service.delete(tender_id)
