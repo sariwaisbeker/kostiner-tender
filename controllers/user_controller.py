@@ -75,13 +75,6 @@ class GetRole(Resource):
             return {'role': current_user_role}
         namespace.abort(403, current_user_role[0]['message'])
 
-
-# @namespace.route('/users/me', methods=['PUT'])
-# @jwt_required()
-# def update_user():
-#     user_id = get_jwt_identity()
-#     data = request.get_json() # Update user details in the database using user_id and data# Example:# update_user_in_db(user_id, data)return jsonify({"msg": "User details updated successfully"}), 200 שם, מש
-
 namespace.add_resource(GetAllUsers, '/get-all-users')
 namespace.add_resource(PostUser, '/post-user')
 namespace.add_resource(GetUserById, '/get-id-user/<string:user_id>')
