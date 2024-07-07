@@ -7,9 +7,12 @@ load_dotenv()
 
 from dal.createDB.connectDB import connect_to_mongodb
 
+client = connect_to_mongodb(
+    f'mongodb+srv://{os.getenv("ATLAS_USER")}:{os.getenv("ATLAS_USER_PASSWORD")}@devcluster.tlutfgy.mongodb.net/')
+
+
 class base_repo:
     def __init__(self, db_name, collection_name):
-        client = connect_to_mongodb(f'mongodb+srv://{os.getenv("ATLAS_USER")}:{os.getenv("ATLAS_USER_PASSWORD")}@devcluster.tlutfgy.mongodb.net/')
         self.collection = client[db_name][collection_name]
         print(f'in __init__ base_repo')
 
