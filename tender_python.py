@@ -21,7 +21,7 @@ def random_amount():
 
 
 # יצירת נתונים מגוונים
-num_records = 1000
+num_records = 10
 data = []
 
 # עדכון הקטגוריות להכללת יותר אפשרויות
