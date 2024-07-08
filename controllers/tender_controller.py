@@ -32,15 +32,22 @@ class GetTenderById(Resource):
 class PostTender(Resource):
     @namespace.doc('create_tender')
     @namespace.expect(path_model)
-    @namespace.marshal_list_with(tender_model, code=201)
+    @namespace.marshal_list_with(tender_model)
     def post(self):
         '''create a new tender'''
         path = request.json
-        result = tender_service.create(path)
-        print(f'in tender controller \ntype(result) {type(result)}')
-        if isinstance(result, list):
+        try:
+            result = tender_service.create(path)
+            print(f'======in tender===== controller \ntender controller type(result) {type(result)}')
+            print(f'tender controller result: {str(result)}')
             return result, 201
-        namespace.abort(result[0], result[1])
+        except (FileNotFoundError, TypeError) as e:
+            print(f'tender controller e.args: {e.args}')
+            print(f'tender controller e.type: {type(e)}')
+            namespace.abort(cdee=400, message=str(e))
+        except Exception as e:
+            print(f'==in Exception as e===\n tender controller type(result) {type(e)}')
+            return e, 404
 
 
 @namespace.route('/put-tender/<string:tender_id>')

@@ -18,6 +18,7 @@ class tender_repo(base_repo):
                 if not self.collection.find_one({'tender_id': ObjectId(item['tender_id'])}):
                     result.append(item)
             if not result:
+                print(f'if not exist new object {result}')
                 return 400, "all the tenders already exists."
             temp = self.collection.insert_many(result)
             return result
