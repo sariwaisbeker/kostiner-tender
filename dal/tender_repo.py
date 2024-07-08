@@ -15,13 +15,27 @@ class tender_repo(base_repo):
         result = []
         try:
             for item in data:
-                if not self.collection.find_one({'tender_id': ObjectId(item['tender_id'])}):
+                tender_id = None
+                try:
+                    tender_id = ObjectId(item['tender_id'])
+                except Exception as e:
+                    print(f"Invalid ObjectId format for tender_id: {item['tender_id']}. Error: {e}")
+                    tender_id = item['tender_id']
+                    continue
+                if not self.collection.find_one({'tender_id': tender_id}):
                     result.append(item)
             if not result:
                 print(f'if not exist new object {result}')
-                return 400, "all the tenders already exists."
-            temp = self.collection.insert_many(result)
-            return result
+                raise DataAlreadyExistsError(400, "all the tenders already exists.")
+            return self.collection.insert_many(result)
         except Exception as e:
-            print(f'in tender repo except Exception as e {e}')
-            return e
+            print(f"Unexpected error: {e}")
+            raise e
+
+class DataAlreadyExistsError(Exception):
+    """Exception raised when data already exists in the database."""
+
+    def __init__(self, code=400, details="Data already exists in the database"):
+        self.code = code
+        self.details = details
+        super().__init__(self.code, self.details)
