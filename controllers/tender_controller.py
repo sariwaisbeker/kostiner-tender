@@ -54,10 +54,13 @@ class CSVUpload(Resource):
             if isinstance(result, InsertManyResult):
                 return 'The documents were successfully entered', 201
         except ValueError as e:
+            print(f'tender controller ValueError: {str(e)}')
             abort(400, str(e))
         except DataAlreadyExistsError as e:
+            print(f'tender controller DataAlreadyExistsError: {e.details}')
             abort(e.code, e.details)
         except Exception as e:
+            print(f'tender controller Exception: {str(e)}')
             abort(500, str(e))
         return {"message": "Unexpected error occurred"}, 500
 
