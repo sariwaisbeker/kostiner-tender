@@ -10,6 +10,8 @@ class base_service:
         return self.repo.get()
     def get_by_id(self, object_id):
         return self.repo.get_by_id(object_id)
+    def get_by_string(self, object_id):
+        return self.repo.get_by_string(object_id)
     def create(self, data):
         return self.repo.insert(data)
     def update(self, object_id, data):

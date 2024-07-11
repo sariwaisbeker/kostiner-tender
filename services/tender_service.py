@@ -1,6 +1,8 @@
 import json
 from bson import ObjectId
 import pandas as pd
+from werkzeug.datastructures import FileStorage
+import io
 
 from dal.tender_repo import tender_repo, DataAlreadyExistsError
 from services.base_service import base_service
@@ -13,43 +15,57 @@ class tender_service(base_service):
         print('in __init__ in tender_service')
 
     def insert_from_csv(self, file):
-        print(f'tender service insert_from_csv')
+        return self._insert_from_file(file, 'csv')
+
+    def insert_from_excel(self, file):
+        return self._insert_from_file(file, 'excel')
+
+    def _insert_from_file(self, file, file_type):
+        print('tender service insert_from_file')
         result = []
         try:
-            print(f'tender service in try')
-            df = pd.read_csv(file)
-            print(f'tender service df: {df}')
-            expected_columns = ['tender_id', 'category', 'tender_name', 'date', 'details__participants',
-                                'details__disqualified_participants', 'details__committee_member']
+            if file_type == 'csv':
+                df = pd.read_csv(file, encoding='utf-8')
+                print(f'tender service df.head() {df.head()}')
+            elif file_type == 'excel':
+                df = pd.read_excel(file, engine='openpyxl')
+                print(f'tender service df.head() {df.head()}')
+
+            expected_columns = ["שם הגוף", "מספר מכרז", "שם מכרז", "תאריך פרסום", "תאריך הגשה", "מציעים", "קטגוריות", "שם הזוכה", "מידע על הזוכה"
+                                , "סכום ההצעה", "אומדן"
+                                ]
 
             actual_columns = df.columns.tolist()
 
             if not all(col in actual_columns for col in expected_columns):
-                raise ValueError(f"CSV file must contain columns: {', '.join(expected_columns)}")
+                raise ValueError(f"{file_type.upper()} file must contain columns: {', '.join(expected_columns)}")
 
             data = df.to_dict(orient='records')
             print(f'tender service data: {data}')
             for row in data:
                 try:
                     tender = {
-                        "tender_id": ObjectId(row['tender_id']),
-                        "category": row['category'],
-                        "tender_name": row['tender_name'],
-                        "date": row['date'],
-                        "details": {
-                            "participants": json.loads(row['details__participants']),
-                            "disqualified_participants": json.loads(row['details__disqualified_participants']),
-                            "committee_member": row['details__committee_member']
-                        }
+                        'tender_id': ObjectId(),
+                        'body_name': row['שם הגוף'],
+                        'tender_number': row['מספר מכרז'],
+                        'tender_name': row['שם מכרז'],
+                        'published_date': row['תאריך פרסום'],
+                        'submission_date': row['תאריך הגשה'],
+                        "category": row['קטגוריות'],
+                        'participants': row['מציעים'],
+                        'winner_name': row['שם הזוכה'],
+                        'details_winner': row['מידע על הזוכה'],
+                        'amount_bid': row['סכום ההצעה'],
+                        'estimate': row['אומדן']
                     }
                 except Exception as e:
                     print(f"Error processing row: {row}. Error: {e}")
                     continue
                 result.append(tender)
             print(f'tender service result: {result}')
-            return self.repo.insert(result)
+            return self.repo.insert_csv(result)
         except DataAlreadyExistsError as e:
-            print(f'tender service DataAlreadyExistsError')
+            print('tender service DataAlreadyExistsError')
             raise e
         except FileNotFoundError as e:
             print(f"File not found: {e}")

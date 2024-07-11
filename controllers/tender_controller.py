@@ -1,11 +1,12 @@
 from flask_restx import Resource, abort
 from flask import request
-from pymongo.results import InsertManyResult
+from pymongo.results import InsertManyResult, InsertOneResult
 from werkzeug.datastructures import FileStorage
+import os
 
 from dal.tender_repo import DataAlreadyExistsError
 from services import tender_service
-from models_swagger.tender_model import namespace_tender as namespace, tender_model, path_model
+from models_swagger.tender_model import namespace_tender as namespace, tender_model
 
 
 @namespace.route('/get-all-tenders')
@@ -29,9 +30,9 @@ class GetTenderById(Resource):
         namespace.abort(404, f"tender {tender_id} doesn't exist")
 
 
-
 upload_parser = namespace.parser()
-upload_parser.add_argument('file', location='files', type=FileStorage, required=True, help='CSV file')
+upload_parser.add_argument('file', location='files', type=FileStorage, required=True, help='CSV or Excel file')
+
 
 @namespace.route('/post/upload')
 class CSVUpload(Resource):
@@ -40,29 +41,46 @@ class CSVUpload(Resource):
         if 'file' not in request.files:
             abort(400, "No file part in the request")
         args = upload_parser.parse_args()
-        print(f'args: {args}')
-        csv_file = args['file']
-        print(f'tender controller csv_file: {csv_file}')
-        if csv_file.filename == '':
+        file = args['file']
+        print(f'tender controller args: {args}')
+        print(f'tender controller file: {file}')
+
+        if file.filename == '':
             abort(400, "No selected file")
 
-        if not csv_file.filename.endswith('.csv'):
-            abort(400, "File is not a CSV")
+        if not (file.filename.endswith('.csv') or file.filename.endswith('.xlsx') or file.filename.endswith('.xls')):
+            abort(400, "File is not a CSV or Excel")
+
         try:
-            result = tender_service.insert_from_csv(csv_file)
-            print(f'tender controller result: {result}')
+            if file.filename.endswith('.csv'):
+                result = tender_service.insert_from_csv(file)
+
+            elif file.filename.endswith('.xlsx') or file.filename.endswith('.xls'):
+                result = tender_service.insert_from_excel(file)
+
             if isinstance(result, InsertManyResult):
                 return 'The documents were successfully entered', 201
+
         except ValueError as e:
-            print(f'tender controller ValueError: {str(e)}')
             abort(400, str(e))
         except DataAlreadyExistsError as e:
-            print(f'tender controller DataAlreadyExistsError: {e.details}')
             abort(e.code, e.details)
         except Exception as e:
-            print(f'tender controller Exception: {str(e)}')
             abort(500, str(e))
         return {"message": "Unexpected error occurred"}, 500
+
+@namespace.route('/post-tender')
+class PostTender(Resource):
+    @namespace.doc('post_tender')
+    @namespace.expect(tender_model)
+    @namespace.marshal_with(tender_model)
+    def post(self):
+        '''post tender by object'''
+        new_tender = request.json
+        print(f'tender controller post new_tender: {new_tender}')
+        result = tender_service.create(new_tender)
+        print(f'tender controller post result: {result}')
+        return result, 201
 
 @namespace.route('/put-tender/<string:tender_id>')
 class PutTenderById(Resource):
@@ -93,6 +111,7 @@ class DeleteTenderById(Resource):
 
 namespace.add_resource(GetAllTenders, '/get-all-tenders')
 namespace.add_resource(CSVUpload, '/post/upload')
+namespace.add_resource(PostTender, '/post-tender')
 namespace.add_resource(GetTenderById, '/get-id-tender/<string:tender_id>')
 namespace.add_resource(PutTenderById, '/put-tender/<string:tender_id>')
 namespace.add_resource(DeleteTenderById, '/delete-tender/<string:tender_id>')
