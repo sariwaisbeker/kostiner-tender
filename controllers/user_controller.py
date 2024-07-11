@@ -1,4 +1,3 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restx import Resource
 from flask import request
 
@@ -65,19 +64,8 @@ class DeleteUserById(Resource):
             return 'The user deleted successfully'
         namespace.abort(404, f"user {user_id} doesn't exist")
 
-@namespace.route('/get-role')
-class GetRole(Resource):
-    @namespace.doc('get_role')
-    def get(self):
-        '''Get current user's role'''
-        current_user_role = user_service.get_user_role()
-        if current_user_role[1] != 403:
-            return {'role': current_user_role}
-        namespace.abort(403, current_user_role[0]['message'])
-
 namespace.add_resource(GetAllUsers, '/get-all-users')
 namespace.add_resource(PostUser, '/post-user')
 namespace.add_resource(GetUserById, '/get-id-user/<string:user_id>')
 namespace.add_resource(PutUserById, '/put-user/<string:user_id>')
 namespace.add_resource(DeleteUserById, '/delete-user/<string:user_id>')
-namespace.add_resource(GetRole, '/get-role')

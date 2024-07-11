@@ -9,18 +9,30 @@ class tender_repo(base_repo):
 
     def get_obj_id(self):
         return 'tender_id'
+    def get_name_string(self):
+            return 'tender_name'
 
-    def insert(self, data):
-        print(f'in tender_repo\nin insert: len(data):{len(data)}')
+    def insert_csv(self, data):
+        print(f'in tender_repo insert: len(data):{len(data)}')
         result = []
         try:
             for item in data:
-                if not self.collection.find_one({'tender_id': ObjectId(item['tender_id'])}):
+                print(f'tender repo item: {item}')
+                print(f'tender repo item: {item['tender_number']}')
+                if not self.collection.find_one({'tender_number': item['tender_number']}):
+                    print(f'tender repo  if not self.collection.find_one')
                     result.append(item)
             if not result:
-                return 400, "all the tenders already exists."
-            temp = self.collection.insert_many(result)
-            return result
+                print(f'if not exist new object {result}')
+                raise DataAlreadyExistsError(400, "all the tenders already exists.")
+            return self.collection.insert_many(result)
         except Exception as e:
-            print(f'in tender repo except Exception as e {e}')
-            return e
+            print(f"Unexpected error: {e}")
+            raise e
+
+class DataAlreadyExistsError(Exception):
+    """Exception raised when data already exists in the database."""
+    def __init__(self, code=400, details="Data already exists in the database"):
+        self.code = code
+        self.details = details
+        super().__init__(self.code, self.details)

@@ -18,6 +18,8 @@ class base_repo:
 
     def get_obj_id(self):
         raise NotImplementedError("Subclasses should implement this method.")
+    def get_name_string(self):
+            raise NotImplementedError("Subclasses should implement this method.")
 
     # @requird_policy('user')
     def get(self):
@@ -32,6 +34,17 @@ class base_repo:
         try:
             obj_id = self.get_obj_id()
             return self.collection.find_one({obj_id: ObjectId(object_id)})
+        except errors.InvalidId as e:
+            print(f"Invalid ID: {e}")
+            return None
+        except errors.PyMongoError as e:
+            print(f"An error occurred: {e}")
+            return None
+
+    def get_by_string(self, object_id):
+        try:
+            search = self.get_name_string()
+            return self.collection.find_one({search: object_id})
         except errors.InvalidId as e:
             print(f"Invalid ID: {e}")
             return None
